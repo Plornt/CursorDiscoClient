@@ -11,6 +11,9 @@ http://i.imgur.com/WJ1mW.gif
 
 This is a WebSocket version of that... with sound... which syncs to all clients.
 
+If my demo server is still up and running you can view it here:
+http://Plornt.com/WebSockets/cursordiscoclient.html
+
 
 Please see the server side:
 
