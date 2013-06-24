@@ -97,13 +97,40 @@ void loadDisco() {
   
   //Start ticking the canvases
   window.requestAnimationFrame((num t) { tickAllCanvas(); });
-  
+  void prevDef (e) {
+   e.preventDefault();
+  }
+  window.onClick.listen(prevDef);
+  window.onDrag.listen(prevDef);
+  window.onDragStart.listen(prevDef);
+  window.onDragEnd.listen(prevDef);
+  window.onDragOver.listen(prevDef);
   // Add event handler for our own cursor..
   window.onMouseMove.listen((MouseEvent ev) { 
     // Ignore warning
-    myCursor.updatePos(ev.clientX, ev.clientY); 
+    myCursor.updatePos(ev.client.x, ev.client.y); 
     
   });
+  
+  // iOS > 6 Support & Android :) Why? Because why not!
+  
+  if (TouchEvent.supported == true) {
+    window.onTouchStart.listen((TouchEvent e) {
+      e.preventDefault();
+      myCursor.updatePos(e.touches[0].page.x, e.touches[0].page.y);
+      
+    });
+    window.onTouchMove.listen((TouchEvent e) {
+      e.preventDefault();
+      myCursor.updatePos(e.touches[0].page.x, e.touches[0].page.y);
+      
+    });
+    window.onTouchEnd.listen((TouchEvent e) {
+      e.preventDefault();
+      myCursor.updatePos(e.touches[0].page.x, e.touches[0].page.y);
+    });
+  }
+  
   // Load up our song!
 
   
@@ -130,7 +157,10 @@ void messageHandler(MessageEvent message) {
       // Check if the cursor already exists on our screen, if it doesnt then create a new one.
       if (!DrawableCursor.cursors.containsKey(splitMsg[1])) {
         String cursorID = splitMsg[1];
-        CanvasHelper.getch("cursors").addDrawable(new DrawableCursor(0, 0, cursorID));
+        var x = (screenWidth * (double.parse(splitMsg[2]) / 100));
+        var y = (screenHeight * (double.parse(splitMsg[3]) / 100));
+        DrawableCursor nc = new DrawableCursor(x, y, cursorID);
+        CanvasHelper.getch("cursors").addDrawable(nc);
       }
     break;
     case "MOVECURSOR":
@@ -157,9 +187,24 @@ void messageHandler(MessageEvent message) {
       String songName = splitMsg[1];
       double songTimeLocation = double.parse(splitMsg[2]);
       
-      // Change the audio source to the new song
-      aud.src = "./assets/$songName";
+      // Backwards compatability - remove audio extension 
+      List songParts = songName.split("\.");
       
+      // Try with MP3 anyway to begin with. As chrome reports it cannot play it
+      String ext = "aac";
+      String type = "audio/aac";
+      if (aud.canPlayType('audio/ogg; codecs="vorbis"', "") == "probably") {
+        ext = "ogg";
+        type = "audio/ogg";
+      }
+      else if (aud.canPlayType("audio/wav", "") == "probably") {
+        ext = "wav";
+        type = "audio/wav";
+      }
+        
+      
+      // Change the audio source to the new song
+      aud.src = "./assets/${songParts[0]}.$ext";
       // Set our global variables syncTo to be the time the server is telling us to sync to.
       // The actual sync is done elsewhere in the code once the song has synced.
       syncTo = songTimeLocation.toInt();

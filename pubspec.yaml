@@ -1,4 +1,4 @@
 name: CursorDiscoClient
-description: A sample web application
+description: Cursor Disco Time!
 dependencies:
   browser: any

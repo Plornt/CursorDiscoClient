@@ -17,8 +17,8 @@ class DrawableAnimation extends Drawable {
   int frames = 12;
   int frameNow = 1;
   int msSinceChange = 0;
-  int x = 0;
-  int y = 0;
+  num x = 0;
+  num y = 0;
   ImageElement img;
   
   /// Create a new animation from the image [img] and plays it back at [frameSpeed].
@@ -51,7 +51,7 @@ class DrawableDiscoBall extends DrawableAnimation {
     // We want our disco ball to be in the middle of the canvas
     num imgPosW = (screenWidth / 2) - ((img.width / 12) / 2); 
     
-    this.x = imgPosW;
+    this.x = imgPosW.toInt();
    
     // Leave the rest to the animation renderer.  
     super.update(n);
