@@ -17,4 +17,4 @@ http://Plornt.com/WebSockets/cursordiscoclient.html
 
 Please see the server side:
 
-<LINK NOT YET ADDED>
+https://github.com/Plornt/CursorDiscoServer
